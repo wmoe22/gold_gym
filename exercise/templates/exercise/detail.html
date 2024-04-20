@@ -1,0 +1,86 @@
+{% extends "exercise/layout.html" %} {% block body %} {% if error %}
+<p>{{error}}</p>
+{% else %} {% if messages %}
+<ul>
+  {% for message in messages %} {% if message.tags == 'success' %}
+  <div role="alert" class="alert alert-success">{{message}}</div>
+  {% else %}
+  <div role="alert" class="alert alert-danger">{{message}}</div>
+  {% endif %} {% endfor %}
+</ul>
+{% endif %}
+
+<style>
+  #easy {
+    background-color: green;
+    color: whitesmoke;
+    border: none;
+  }
+
+  #medium {
+    background-color: yellow;
+    color: #000;
+    border: none;
+  }
+
+  #hard {
+    background-color: red;
+    color: whitesmoke;
+    border: none;
+  }
+</style>
+<h1 class="m-4 text-center text-capitalize">{{exercise.name}} : Details</h1>
+{% endif %}
+
+<div class="d-flex justify-content-center align-items-center">
+  <div class="card" style="width: 35rem">
+    {% if in_saved_list %}
+    <form action="{% url  'unsave_exercise' id=exercise.id %}" method="post">
+      {% csrf_token %}
+      <button class="btn btn-primary" type="submit">
+        Unsave <i class="fa-heart fa-solid text-danger"></i>
+      </button>
+    </form>
+    {% else %}
+    <form action="{% url 'save_exercise' id=exercise.id %}" method="post">
+      {% csrf_token %}
+      <button class="btn btn-light" type="submit">
+        Add to Save <i class="fa-heart fa-solid"></i>
+      </button>
+    </form>
+    {% endif %}
+    <img src="{{exercise.gifUrl}}" class="card-img-top img-fluid" alt="..." />
+    <div class="card-body">
+      <h5 class="card-title text-capitalize">{{exercise.name}}</h5>
+      <p class="card-text">{{exercise.instructions}}</p>
+    </div>
+    <ul class="list-group list-group-flush">
+      <button class="badge w-25 list-group-item" id="{{exercise.difficulty}}">
+        {{exercise.difficulty}}
+      </button>
+
+      <li class="list-group-item text-capitalize">
+        <strong> bodyPart:</strong> {{exercise.bodyPart}}
+      </li>
+      <li class="list-group-item text-capitalize">
+        <strong>Target:</strong> {{exercise.target}}
+      </li>
+      <li class="list-group-item text-capitalize">
+        <strong>equipment:</strong> {{exercise.equipment}}
+      </li>
+      <li class="list-group-item text-capitalize">
+        <strong>target:</strong> {{exercise.target}}
+      </li>
+    </ul>
+    <div class="card-body text-capitalize">
+      <p>secondaryMuscles: {{exercise.secondaryMuscles}}</p>
+    </div>
+
+    <form action="{% url 'complete_exercise' id=exercise.id %}" method="post">
+      {% csrf_token %}
+      <input type="submit" value="complete" class="btn btn-primary w-100" />
+    </form>
+  </div>
+</div>
+
+{% endblock %}

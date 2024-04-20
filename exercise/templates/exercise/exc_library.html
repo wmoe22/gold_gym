@@ -1,0 +1,140 @@
+
+
+
+
+
+{% extends "exercise/layout.html" %}
+{% block body %}
+<style>
+
+#easy{
+  background-color: green;
+  color: whitesmoke;
+  border: none;
+}
+
+#medium{
+  background-color: yellow;
+  color: #000;
+  border: none;
+}
+
+#hard{
+  background-color: red;
+  color: whitesmoke;
+  border: none;
+}
+  
+
+
+</style>
+{% if error %}
+<p>{{error}}</p>
+{% else %} 
+<div>
+<h1 class="text-start" >Exercise Library</h1>
+<div class="row">
+  <div class="col-md-6">
+    <div class="d-flex flex-column m-3" style="gap: 10px;">
+      <form action="{% url 'results' %}" method="get">
+        {% csrf_token %}
+      <input type="search" id="searchInput" name="q" class="form-control" placeholder="Search exercises">
+    </form>
+    </div>
+  </div>
+  <div class="col-md-6">
+      <div class="d-flex flex-column m-3" style="gap: 10px;">
+          <a href="{% url 'filter_exercises'%}">
+              <button class="btn btn-primary w-100">
+                  <i class="fa-solid fa-filter"></i>
+                  Filter Exercises
+              </button>
+          </a>
+      </div>
+</div>
+
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mx-3" style="gap: 10px;">
+    {% for exercise in exc_per_page %}
+    <div class="card"  style="width: 18rem;">
+        <a href="{% url 'detail' id=exercise.id %}">
+            <img src="{{exercise.gifUrl}}" class="card-img-top" alt="{{exercise.bodyPart}}">
+      </a>
+        <div class="card-body">
+          <p class="card-text btn btn-light"><strong>Body Part: </strong> {{exercise.bodyPart}}</p>
+          <p class="card-text btn btn-light"><strong>Equipment: </strong>{{exercise.equipment}}</p>
+          <p class="card-text btn btn-light"><strong>Target: </strong>{{exercise.target}}</p>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex">
+              {% if exercise.difficulty == 'easy' %}
+              <button class=" badge"  id="easy">{{exercise.difficulty}}</button>
+             {% elif exercise.difficulty == 'medium' %}
+             <button class=" badge" id="medium">{{exercise.difficulty}}</button>
+             {% else %}
+             <button class="badge"  id="hard">{{exercise.difficulty}}</button>
+             {% endif %}
+            </li>
+          </ul>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+    <nav  >
+        <ul  class="pagination justify-content-end m-4">
+            {% if exc_per_page.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ exc_per_page.previous_page_number }}"
+                >Previous</a
+              >
+              {% for page_num in exc_per_page.paginator.page_range %}
+              <li class="page-item {% if page_num == exc_per_page.number %}active{% endif %}">
+                <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+              </li>
+            {% endfor %}
+            </li>
+            {% endif %} {% if exc_per_page.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ exc_per_page.next_page_number }}"
+                >Next</a
+              >
+            </li>
+            {% endif %}
+        </ul>
+      </nav>
+
+{% endif %}
+
+
+      
+      
+
+<script>
+    function sortExc(muscle){
+        window.location.href = `/sort_exc/?q=${muscle.toLowerCase()}`
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var searchInput = document.getElementById('searchInput');
+        var exerciseList = document.getElementById('exerciseList');
+        
+
+        searchInput.addEventListener('input', function() {
+            var query = this.value.trim().toLowerCase();
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        exerciseList.innerHTML = ''
+                        exerciseList.innerHTML = xhr.responseText;
+                    } else {
+                        console.error('Request failed:', xhr.statusText);
+                    }
+                }
+            };
+            xhr.open('GET', '/results/?q=' + query, true);
+            xhr.send();
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "exercise/layout.html" %} {% block body %} {% if error %}
+<p>{{error}}</p>
+{% else %}
+<h1>Showing Results for : {{query}}</h1>
+<hr />
+<style>
+  #easy {
+    background-color: green;
+    color: whitesmoke;
+    border: none;
+  }
+
+  #medium {
+    background-color: yellow;
+    color: #000;
+    border: none;
+  }
+
+  #hard {
+    background-color: red;
+    color: whitesmoke;
+    border: none;
+  }
+</style>
+<ul class="container">
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for exercise in exc_per_page %}
+    <div class="d-flex" style="gap: 10px">
+      <div class="card" style="width: 18rem">
+        <a href="{% url 'detail' id=exercise.id %}">
+          <img
+            src="{{exercise.gifUrl}}"
+            class="card-img-top"
+            alt="{{exercise.bodyPart}}"
+          />
+        </a>
+        <div class="card-body">
+          <p class="card-text">
+            <strong>Body Part: </strong> {{exercise.bodyPart}}
+          </p>
+          <p class="card-text">
+            <strong>Equipment: </strong>{{exercise.equipment}}
+          </p>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex">
+              {% if exercise.difficulty == 'easy' %}
+              <button class="badge" id="easy">{{exercise.difficulty}}</button>
+              {% elif exercise.difficulty == 'medium' %}
+              <button class="badge" id="medium">{{exercise.difficulty}}</button>
+              {% else %}
+              <button class="badge" id="hard">{{exercise.difficulty}}</button>
+              {% endif %}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</ul>
+{% endif %} {% endblock %}

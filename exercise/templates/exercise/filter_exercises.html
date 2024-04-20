@@ -1,0 +1,225 @@
+{% extends "exercise/layout.html" %} {% block body %} {% if error %}
+<p>{{error}}</p>
+{% else %}
+
+<style></style>
+<div class="row m-3 flex-column">
+  <h1 class="text-center my-2">Filter Exercises</h1>
+
+  <div class="mx-5">
+    <div class="btn-group" role="group"></div>
+    <hr />
+    <form action="{% url 'filtered_exercises' %}" method="get">
+      <div class="btn-group" role="group">
+        <div>
+          <h4>Difficulty</h4>
+          <input
+            type="radio"
+            class="btn-check"
+            name="difficulty"
+            value="easy"
+            id="easy"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="easy">Easy</label>
+          <input
+            type="radio"
+            class="btn-check"
+            name="difficulty"
+            id="medium"
+            value="medium"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="medium">Medium</label>
+          <input
+            type="radio"
+            class="btn-check"
+            name="difficulty"
+            value="hard"
+            id="hard"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="hard">Hard</label>
+        </div>
+        <div>
+          <h4>MuscleGroup</h4>
+          <input
+            class="btn-check"
+            type="radio"
+            name="musclegroup"
+            value="back"
+            id="btnradio1"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="btnradio1">Back</label>
+
+          <input
+            class="btn-check"
+            type="radio"
+            name="musclegroup"
+            value="waist"
+            id="btnradio2"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="btnradio2">Waist</label>
+
+          <input
+            class="btn-check"
+            type="radio"
+            name="musclegroup"
+            value="upper legs"
+            id="btnradio3"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="btnradio3">Upper Legs</label>
+          <input
+            class="btn-check"
+            type="radio"
+            name="musclegroup"
+            value="lower legs"
+            id="btnradio4"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="btnradio4">Lower Legs</label>
+          <input
+            class="btn-check"
+            type="radio"
+            name="musclegroup"
+            value="upper legs"
+            id="btnradio5"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="btnradio5">Upper Arms</label>
+          <input
+            class="btn-check"
+            type="radio"
+            name="musclegroup"
+            value="lower legs"
+            id="btnradio6"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="btnradio6">Lower Arms</label>
+          <input
+            class="btn-check"
+            type="radio"
+            name="musclegroup"
+            value="shoulders"
+            id="btnradio7"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="btnradio7">Shoulders</label>
+          <input
+            class="btn-check"
+            type="radio"
+            name="musclegroup"
+            value="cardio"
+            id="btnradio8"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="btnradio8">Cardio</label>
+          <input
+            class="btn-check"
+            type="radio"
+            value="neck"
+            name="musclegroup"
+            id="btnradio9"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="btnradio9">Neck</label>
+          <input
+            class="btn-check"
+            type="radio"
+            value="chest"
+            name="musclegroup"
+            id="btnradio10"
+            autocomplete="off"
+          />
+          <label class="btn btn-light" for="btnradio10">Chest</label>
+        </div>
+      </div>
+      <hr />
+      <h4 class="text-muted my-3">Equipment</h4>
+      <div id="eq_btn_container"></div>
+      <hr />
+      <input
+        type="submit"
+        id="submit"
+        class="btn btn-primary w-100"
+        value="Apply Filter"
+      />
+    </form>
+  </div>
+</div>
+
+{% endif %}
+<script>
+  const equipmentTypes = [
+    "Assisted",
+    "Band",
+    "Barbell",
+    "Body Weight",
+    "Bosu Ball",
+    "Cable",
+    "Dumbbell",
+    "Elliptical Machine",
+    "EZ Barbell",
+    "Hammer",
+    "Kettlebell",
+    "Leverage Machine",
+    "Medicine Ball",
+    "Olympic Barbell",
+    "Resistance Band",
+    "Roller",
+    "Rope",
+    "Skierg Machine",
+    "Sled Machine",
+    "Smith Machine",
+    "Stability Ball",
+    "Stationary Bike",
+    "Stepmill Machine",
+    "Tire",
+    "Trap Bar",
+    "Upper Body Ergometer",
+    "Weighted",
+    "Wheel Roller",
+  ];
+
+  const eq_btn_container = document.getElementById("eq_btn_container");
+  const submit = document.getElementById("submit");
+  equipmentTypes.forEach((equipment) => {
+    const button = document.createElement("input");
+    button.className = "btn-check";
+    button.type = "radio";
+    button.name = "equipment";
+    button.value = equipment.toLowerCase();
+    button.id = `btnradio-${equipment.toLowerCase().replace(/\s/g, "-")}`;
+    button.autocomplete = "off";
+
+    const label = document.createElement("label");
+    label.className = "btn btn-light m-1";
+    label.htmlFor = button.id;
+    label.textContent = equipment;
+
+    eq_btn_container.appendChild(button);
+    eq_btn_container.appendChild(label);
+  });
+
+  submitButton.addEventListener("click", function (event) {
+    const selectedMuscleGroup = document.querySelector(
+      'input[name="equipment"]:checked'
+    );
+    if (selectedMuscleGroup) {
+      const selectedMuscleGroupName = selectedMuscleGroup.value;
+      searchByMuscleGroup(selectedMuscleGroupName);
+    } else {
+      alert("Please select a equipment.");
+    }
+    event.preventDefault();
+  });
+
+  function searchByEquipment(equipment, musclegroup, difficulty) {
+    window.location.href = `/filtered_exercises/?equipment=${equipment}&musclegroup=${musclegroup}&difficulty=${difficulty.toLowerCase()}`;
+  }
+</script>
+
+{% endblock %}

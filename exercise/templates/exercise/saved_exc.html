@@ -1,0 +1,65 @@
+{% extends "exercise/layout.html" %}
+
+{% block body %}
+
+{% if error %}
+  <p>{{error}}</p>
+{% else %} 
+<div class="mx-3">
+<h1>Saved Exercises</h1>
+<hr>
+<div class="row mx-3" style="gap: 10px;">
+  {% if exercises %}
+  {% for exercise in exercises %}
+  <div class="card"  style="width: 18rem;">
+    <button class="btn btn-light w-25 d-flex align-items-center justify-content-center">
+      <i class="fa-solid fa-heart text-danger my-1"></i>
+    </button>
+    <a href="{% url 'detail' id=exercise.id %}">
+      <img src="{{exercise.gifUrl}}" class="card-img-top" alt="{{exercise.bodyPart}}">
+    </a>
+    <div class="card-body d-flex align-items-center justify-content-center">
+      
+      <p class="card-text"><strong>Name: </strong> {{exercise.name}}</p>
+       
+      </div>
+      </div>
+  {% endfor %}
+  {% else %}
+  <div style="border: 2px grey;" class="p-5">
+    Exercises that you save will appear here
+  </div>
+  {% endif %}
+  </div>
+  <nav >
+      <ul class="pagination justify-content-end m-4">
+          {% if exc_per_page.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ exc_per_page.previous_page_number }}"
+              >Previous</a
+            >
+            {% for page_num in exc_per_page.paginator.page_range %}
+            <li class="page-item {% if page_num == exc_per_page.number %}active{% endif %}">
+              <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+            </li>
+          {% endfor %}
+          </li>
+          {% endif %} {% if exc_per_page.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ exc_per_page.next_page_number }}"
+              >Next</a
+            >
+          </li>
+          {% endif %}
+      </ul>
+    </nav>
+
+  </div>
+
+
+
+
+
+{% endif %}
+
+{% endblock %}

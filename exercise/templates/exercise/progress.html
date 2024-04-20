@@ -1,0 +1,53 @@
+{% extends "exercise/layout.html" %} {% block body %} {% if error %}
+<p>{{error}}</p>
+{% else %} {% if user.is_authenticated %}
+<div class="mx-3" style="gap: 20px">
+  <h1>Current Progress</h1>
+  {% if user.is_authenticated %} Signed in as
+  <strong>{{ user.username }}</strong>. {% else %} Not signed in. {% endif %}
+  <br />
+  <p class="btn btn-light my-4" style="font-size: 25px">Analytics</p>
+  <div class="d-flex m-3 flex-column">
+    <h5 class="font-weight-bold text-muted">Streaks</h5>
+    <div class="row bg-light px-4 pt-3" style="width: fit-content">
+      <div class="d-flex m-1 align-items-centert justify-content-center">
+        <div>
+          <p>
+            Current Streak
+            <i class="fa-solid fa-fire text-primary">
+              {{streak.current_streak}}
+            </i>
+          </p>
+        </div>
+        <div style="padding-left: 10px">
+          <p>
+            Longest Streak
+            <i class="fa-solid fa-fire text-danger">
+              {{streak.longest_day_streak}}
+            </i>
+          </p>
+        </div>
+      </div>
+    </div>
+    <h5 class="font-weight-bold text-muted">Trained Muscles</h5>
+    <div class="d-flex my-3" style="gap: 10px">
+      {% for exc in exercises %}
+      <p class="btn btn-light text-capitalize" style="width: fit-content">
+        {{exc.bodyPart}}
+      </p>
+      {% endfor %}
+    </div>
+    <h5 class="font-weight-bold text-muted">
+      Finished Workouts ({{exercises.count}})
+    </h5>
+    <div class="d-flex flex-column my-3" style="gap: 10px">
+      {% for exc in exercises %}
+      <p class="btn btn-light text-capitalize" style="width: fit-content">
+        {{exc.name}}
+      </p>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% endif %} {% endif %} {% endblock %}
+</div>

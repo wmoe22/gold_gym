@@ -1,0 +1,31 @@
+{% extends "exercise/layout.html" %} {% block body %} {% if error %}
+<p>{{error}}</p>
+{% else %}
+
+<div class="row m-auto w-75 bg-light">
+  <div class="col-md-6 d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center justify-content-center">
+      <div class="btn bg-light p-5">
+        <h1>Explore Exercise Library</h1>
+        <p>Over 200 exercises for all levels</p>
+        <button class="btn btn-primary">
+          <a
+            href="{% url 'exc_library' %}"
+            class="text-light"
+            style="text-decoration: none"
+            >View Library</a
+          >
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mb-4">
+    <img
+      src="https://staticg.sportskeeda.com/editor/2023/04/a9144-16813712111604-1920.jpg"
+      style="max-width: 100%; height: auto"
+      alt="Login"
+    />
+  </div>
+</div>
+
+{% endif %} {% endblock %}
