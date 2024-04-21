@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from datetime import date
+
 
 
 
@@ -29,14 +31,4 @@ class Exercises(models.Model):
 
     def __str__(self):
         return self.name
-    
-
-class Streak(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
-    start_date = models.DateField()
-    current_streak = models.IntegerField(default=0,max_length=6)
-    longest_day_streak = models.CharField(default=0,max_length=6)
-
-    def __str__(self):
-        return f"{self.user.username}'s streak"
     

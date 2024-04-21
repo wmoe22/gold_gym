@@ -8,27 +8,6 @@
   <br />
   <p class="btn btn-light my-4" style="font-size: 25px">Analytics</p>
   <div class="d-flex m-3 flex-column">
-    <h5 class="font-weight-bold text-muted">Streaks</h5>
-    <div class="row bg-light px-4 pt-3" style="width: fit-content">
-      <div class="d-flex m-1 align-items-centert justify-content-center">
-        <div>
-          <p>
-            Current Streak
-            <i class="fa-solid fa-fire text-primary">
-              {{streak.current_streak}}
-            </i>
-          </p>
-        </div>
-        <div style="padding-left: 10px">
-          <p>
-            Longest Streak
-            <i class="fa-solid fa-fire text-danger">
-              {{streak.longest_day_streak}}
-            </i>
-          </p>
-        </div>
-      </div>
-    </div>
     <h5 class="font-weight-bold text-muted">Trained Muscles</h5>
     <div class="d-flex my-3" style="gap: 10px">
       {% for exc in exercises %}

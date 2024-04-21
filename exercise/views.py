@@ -1,19 +1,22 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect,HttpResponseBadRequest
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
+from django.db.models.signals import post_save
 import requests
 from django.urls import reverse
 from django.core.paginator import Paginator
 import random
 from django.contrib import messages
+from django.dispatch import receiver
 
-from datetime import date
+from datetime import datetime,date
 from datetime import timedelta
+from django.utils import timezone
 
 
 
-from .models import User,Exercises,Streak
+from .models import User,Exercises
 
 # Create your views here.
 
@@ -23,7 +26,7 @@ def index(request):
    
 def exc_library(request):
     headers = {
-        "X-RapidAPI-Key": "abfff46e62msh26dafa5ba772b8cp16ce3bjsna99497868e69",
+        "X-RapidAPI-Key": "45f43b7f55msha70f4333a11f018p14bd57jsnb802b7c5fbab",
         "X-RapidAPI-Host": "exercisedb.p.rapidapi.com"
     }
 
@@ -93,31 +96,6 @@ def results(request):
         return HttpResponseBadRequest("Bad request. ")      
 
 
-def update_streak(request):
-
-    user = request.user
-    today = date.today()
-    streak,created = Streak.objects.get_or_create(user=user,defaults={'start_date':today})
-
-    if not created:
-        #if the previous streak was yesterday we update
-        if streak.start_date == today - timedelta(days=1):
-            streak.current_streak += 1
-        else:
-            streak.current_streak = 1
-
-        streak.longest_day_streak = max(int(streak.longest_day_streak), streak.current_streak)    
-    else:
-        streak.start_date = today
-        streak.current_streak = 1
-        streak.longest_day_streak = 1
-
-    streak.save()     
-
-    return render(request,"exercise/progress.html",{
-        "user":user,
-        "streak":streak
-    })   
 
 
 def login_view(request):
@@ -140,7 +118,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    return HttpResponseRedirect(reverse("login"))
 
 def register(request):
     if request.method == "POST":
@@ -234,10 +212,8 @@ def detail(request, id):
 
 
 def progress(request):
-    streak = Streak.objects.get(user=request.user)
     exercises = completed_exercise(request)
-
     return render(request, "exercise/progress.html", {
-        "streak": streak,
         "exercises": exercises
     })
+
